@@ -32,7 +32,9 @@ gem 'jbuilder', '~> 2.5'
 # gem 'capistrano-rails', group: :development
 
 gem "font-awesome-rails"
+gem 'faraday_middleware'
 gem 'pg'
+gem 'slack-ruby-client'
 gem 'webpacker'
 
 group :development, :test do
