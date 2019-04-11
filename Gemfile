@@ -33,6 +33,7 @@ gem 'jbuilder', '~> 2.5'
 
 gem "font-awesome-rails"
 gem 'faraday_middleware'
+gem 'mimemagic'
 gem 'pg'
 gem 'slack-ruby-client'
 gem 'webpacker'

@@ -38,19 +38,22 @@ class SlackUserExporter
   def download_icon(id, image_path)
     uri = URI.parse(image_path)
     params = URI.decode_www_form(uri.query).to_h if uri.query
-    ext = extract_extension(image_path)
     sleep(1)
+
+    conn = Faraday.new(url: image_path) do |faraday|
+      faraday.use FaradayMiddleware::FollowRedirects
+      faraday.adapter :net_http
+    end
+    response = conn.get uri.path, params
+    ext = guess_extension(response.body)
+
     open("./export/users/images/#{id}.#{ext}", 'wb') do |file|
-      conn = Faraday.new(url: image_path) do |faraday|
-               faraday.use FaradayMiddleware::FollowRedirects
-               faraday.adapter :net_http
-             end
-      response = conn.get uri.path, params
       file.write(response.body)
     end
   end
 
-  def extract_extension(image_path)
-    image_path.split('?').first.match(/\A.*\.(.+)\Z/)[1]
+  def guess_extension(contents)
+    mime = MimeMagic.by_magic(contents)
+    mime.type.split('/').last
   end
 end
