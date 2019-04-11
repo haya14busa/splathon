@@ -38,7 +38,7 @@ class SlackUserExporter
   def download_icon(id, image_path)
     uri = URI.parse(image_path)
     params = URI.decode_www_form(uri.query).to_h if uri.query
-    ext = uri.path.match(/\A.*\.(.+)\Z/)[1]
+    ext = extract_extension(image_path)
     sleep(1)
     open("./export/users/images/#{id}.#{ext}", 'wb') do |file|
       conn = Faraday.new(url: image_path) do |faraday|
@@ -48,5 +48,9 @@ class SlackUserExporter
       response = conn.get uri.path, params
       file.write(response.body)
     end
+  end
+
+  def extract_extension(image_path)
+    image_path.split('?').first.match(/\A.*\.(.+)\Z/)[1]
   end
 end
