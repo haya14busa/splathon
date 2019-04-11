@@ -19,10 +19,10 @@ class SlackUserExporter
       image_path = extract_image_path(profile)
       download_icon(id, image_path) 
 
-      [id, name, real_name]
+      [id, name, real_name, image_path]
     end
 
-    ::CSV.open('./export/users/slack_users.csv', 'wb', col_sep: "\t", headers: %i(id name real_name), write_headers: true) do |csv|
+    ::CSV.open('./export/users/slack_users.csv', 'wb', col_sep: "\t", headers: %i(id name real_name image_path), write_headers: true) do |csv|
       users.each { |user| csv << user }
     end
   end
