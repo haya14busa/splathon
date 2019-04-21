@@ -3,8 +3,9 @@
 require 'csv'
 
 class SlackUserExporter
-  def initialize
+  def initialize(user_ids = [])
     @client = Slack::Web::Client.new
+    @user_ids = user_ids
   end
 
   def run
@@ -14,13 +15,15 @@ class SlackUserExporter
       real_name = member['real_name']
       profile = member['profile']
 
+      next unless @user_ids.include?(id)
+
       puts "#{id} #{name} 取得中"
 
       image_path = extract_image_path(profile)
       download_icon(id, image_path) 
 
       [id, name, real_name, image_path]
-    end
+    end.compact
 
     ::CSV.open('./export/users/slack_users.csv', 'wb', col_sep: "\t", headers: %i(id name real_name image_path), write_headers: true) do |csv|
       users.each { |user| csv << user }
